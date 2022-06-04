@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SW_APIS.Models;
+using SW_APIS.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,16 @@ namespace SW_APIS.Controllers
     public class BatchController : Controller
     {
         [Route("webhook")]
+        [HttpPost]
         [Authorize]
-        public async Task Webhook([FromBody]BatchModel batchRequest)
+        public async Task<IActionResult> Webhook([FromBody]BatchModel batchRequest)
         {
-
+            var validateRequest = BatchService.ValidateRequest(batchRequest);
+            if (validateRequest.status != "success")
+            {
+                return BadRequest(validateRequest);
+            }
+            return Ok(validateRequest);
         }
     }
 }
