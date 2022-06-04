@@ -10,7 +10,7 @@ namespace SW_APIS.Services
     {
         List<UserModel> Users = new List<UserModel>()
         {
-            new UserModel() {User = "user@mail.com", Password = "12345"}
+            new UserModel() {User = "aeyrton.villalobos@sw.com.mx", Password = "00$wPass"}
         };
         public async Task<bool> Authenticate (string email, string password) => 
             Users.Any(l => l.User == email && l.Password == password);
