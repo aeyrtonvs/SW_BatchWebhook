@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SW_APIS.Controllers
 {
-    [Route("/batch/")]
+    [Route("api/batch/")]
     public class BatchController : Controller
     {
         [Route("webhook")]
@@ -23,7 +23,12 @@ namespace SW_APIS.Controllers
             {
                 return BadRequest(validateRequest);
             }
-            return Ok(validateRequest);
+            var result = await BatchService.SaveReport(batchRequest);
+            if(result.status != "success")
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }
