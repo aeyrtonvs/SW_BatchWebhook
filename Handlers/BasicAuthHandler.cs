@@ -30,13 +30,14 @@ namespace SW_APIS.Handlers
         {
             if (!Request.Headers.ContainsKey("Authorization"))
                 return AuthenticateResult.Fail("No se pudo autenticar el servicio.");
-            bool result = false;
+            bool result;
+            string user;
             try
             {
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                 var authBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(authBytes).Split(new[] { ':' }, 2);
-                var user = credentials.ElementAt(0);
+                user = credentials.ElementAt(0);
                 var password = credentials.ElementAt(1);
                 result = await _userService.Authenticate(user, password);
             }
@@ -50,7 +51,7 @@ namespace SW_APIS.Handlers
             }
             var claims = new Claim[]
             {
-                new Claim(ClaimTypes.Name, "User")
+                new Claim(ClaimTypes.Name, user)
             };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);

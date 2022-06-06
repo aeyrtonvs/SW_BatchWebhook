@@ -5,35 +5,41 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SW_APIS.Services
 {
     public class BatchService
     {
-        public static async Task<ResponseModel> SaveReport(BatchModel batch)
+        public static async Task<ResponseModel> SaveReportAsync(BatchModel batch, ClaimsPrincipal user)
         {
             var status = "success";
+            var message = String.Empty;
+            string separator = "---------------------";
             try
             {
-                var dir = String.Format("{0}\\Resources\\report\\reports.txt", Directory.GetCurrentDirectory());
-                var content = String.Format("{0}\nOutput     -----> {1}\nReport     -----> {2}\nError      -----> {3}\n\n", DateTime.Now.ToString(), batch.UrlOutput, batch.UrlReport, batch.UrlReportError);
-                File.WriteAllText(dir, content);
+                var dir = String.Format("{0}\\Resources\\report\\reportsLog.txt", Environment.CurrentDirectory);
+                var content = String.Format("{0}\n[{1}]\nUser   -----> {2}\nOutput -----> {3}\nReport -----> {4}\nError  -----> {5}\n{6}\n\n",
+                                            separator, DateTime.Now.AddHours(-5).ToString("dd/MM/yyyyTHH-mm-ss"), TryGetUser(user, out string name) ? name : "Unknown", 
+                                            batch.UrlOutput, batch.UrlReport, batch.UrlReportError, separator);
+                await File.AppendAllTextAsync(dir, content);
             }
             catch(Exception e)
             {
                 status = "error";
+                message = e.Message;
             }
 
             return new ResponseModel()
             {
                 status = status,
-                message = String.Empty
+                message = message
             };
         }
         public static ResponseModel ValidateRequest(BatchModel batchRequest)
         {
-            if(batchRequest is null || (batchRequest.UrlOutput is null || batchRequest.UrlReport is null || batchRequest.UrlReportError is null))
+            if(batchRequest is null || (String.IsNullOrEmpty(batchRequest.UrlOutput) && String.IsNullOrEmpty(batchRequest.UrlReport) && String.IsNullOrEmpty(batchRequest.UrlReportError)))
             {
                 return new ResponseModel()
                 {
@@ -42,6 +48,15 @@ namespace SW_APIS.Services
                 };
             }
             return new ResponseModel();
+        }
+        private static bool TryGetUser(ClaimsPrincipal user, out string name)
+        {
+            name = user.Identity.Name;
+            if (String.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
