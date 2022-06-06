@@ -17,13 +17,13 @@ namespace SW_APIS.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Webhook([FromBody]BatchModel batchRequest)
-        {
+        { 
             var validateRequest = BatchService.ValidateRequest(batchRequest);
             if (validateRequest.status != "success")
             {
                 return BadRequest(validateRequest);
             }
-            var result = await BatchService.SaveReport(batchRequest);
+            var result = await BatchService.SaveReportAsync(batchRequest, User);
             if(result.status != "success")
             {
                 return BadRequest(result);
