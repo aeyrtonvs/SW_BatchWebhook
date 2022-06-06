@@ -1,5 +1,4 @@
-﻿using MimeKit;
-using SW_APIS.Models;
+﻿using SW_APIS.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

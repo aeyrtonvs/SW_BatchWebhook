@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using SW_APIS.Handlers;
 using SW_APIS.Services;
 using System;
@@ -33,6 +34,21 @@ namespace SW_APIS
             services.AddAuthentication("BasicAuthentication")
                     .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>
                     ("BasicAuthentication", null);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Batch Service API",
+                    Version = "v1",
+                    Description = "API for SW Batch Service.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Aeyrton Villalobos",
+                        Email = "aeyrtonvs@gmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/aeyrtonvs/"),
+                    },
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +70,14 @@ namespace SW_APIS
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Batch Service API");
+                c.RoutePrefix = string.Empty;
             });
         }
     }

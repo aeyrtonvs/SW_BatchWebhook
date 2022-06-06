@@ -2,9 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.0.0.2</Version>
+    <Version>0.0.0.3</Version>
     <Authors>aeyrtonvs@gmail.com</Authors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="Resources\report\reportsLog.txt">
