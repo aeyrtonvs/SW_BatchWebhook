@@ -17,12 +17,11 @@ namespace SW_APIS.Services
             var status = "success";
             var message = String.Empty;
             string separator = "---------------------";
-            string name = String.Empty;
             try
             {
                 var dir = String.Format("{0}\\Resources\\report\\reportsLog.txt", Environment.CurrentDirectory);
                 var content = String.Format("{0}\n[{1}]\nUser   -----> {2}\nOutput -----> {3}\nReport -----> {4}\nError  -----> {5}\n{6}\n\n",
-                                            separator, DateTime.Now.AddHours(-5).ToString("dd/MM/yyyyTHH-mm-ss"), TryGetUser(user, out name) ? name : "Unknown", 
+                                            separator, DateTime.Now.AddHours(-5).ToString("dd/MM/yyyyTHH-mm-ss"), TryGetUser(user, out string name) ? name : "Unknown", 
                                             batch.UrlOutput, batch.UrlReport, batch.UrlReportError, separator);
                 await File.AppendAllTextAsync(dir, content);
             }
@@ -40,7 +39,7 @@ namespace SW_APIS.Services
         }
         public static ResponseModel ValidateRequest(BatchModel batchRequest)
         {
-            if(batchRequest is null || (batchRequest.UrlOutput is null || batchRequest.UrlReport is null || batchRequest.UrlReportError is null))
+            if(batchRequest is null || (String.IsNullOrEmpty(batchRequest.UrlOutput) && String.IsNullOrEmpty(batchRequest.UrlReport) && String.IsNullOrEmpty(batchRequest.UrlReportError)))
             {
                 return new ResponseModel()
                 {
