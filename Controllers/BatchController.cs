@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SW_APIS.Controllers
 {
-    [Route("api/batch/")]
+    [Route("batch/")]
     public class BatchController : Controller
     {
         [Route("webhook")]
